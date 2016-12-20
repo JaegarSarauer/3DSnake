@@ -5,8 +5,11 @@ using UnityEngine.UI;
 public class GameManager : MonoBehaviour {
     public static GameManager instance;
 
+    public bool isPaused = false;
+
     public GameObject snakeObject;
     public Snake snake;
+    public GameObject food;
 
     private float _updateInterval = .5f;
     public float updateInterval {
@@ -20,7 +23,7 @@ public class GameManager : MonoBehaviour {
         }
     }
     private float timePassed;
-    private bool died = false;
+    public bool died = false;
 
     public int distanceFromWorldCenter = 8;
 
@@ -47,28 +50,42 @@ public class GameManager : MonoBehaviour {
 	
 	// Update is called once per frame
 	void LateUpdate () {
+        if (isPaused)
+            return;
         timePassed += Time.deltaTime;
         if (checkUpdate() && !died) {
             gameUpdate();
         }
-	}
+    }
 
     void gameUpdate() {
         timePassed = 0;
         checkWin();
-        createFood();
+        food = createFood();
+        if (food != null)
+            food.GetComponent<Food>().reallign();
         MovementController.instance.worldUpdate();
         Snake.instance.updateSnake();
         MovementController.instance.nextMove = MovementController.RotateDirection.NONE;
         checkDeath();
     }
 
+    public void checkDeath(Vector3 futurePos) {
+        if (Snake.instance.pointOnSnake(futurePos) || Snake.instance.outsideOfWorld(futurePos)) {
+            SceneManager.instance.endGame(false);
+            if (!died)
+                Snake.instance.killSnake();
+            died = true;
+        }
+    }
+
     public void checkDeath() {
         if (Snake.instance.pointOnSnake(Snake.instance.transform.position) || Snake.instance.outsideOfWorld()) {
             SceneManager.instance.endGame(false);
+            if (!died)
+                Snake.instance.killSnake();
             died = true;
         }
-
     }
 
     bool checkUpdate() {
@@ -102,9 +119,9 @@ public class GameManager : MonoBehaviour {
             SceneManager.instance.endGame(true);
     }
 
-    public void createFood() {
+    public GameObject createFood() {
         if (GameObject.FindGameObjectWithTag("Food") != null)
-            return;
+            return null;
         var tries = 10;
         Vector3 createPoint = new Vector3(0,0,0);
         while (tries-- >= 0) {
@@ -113,10 +130,11 @@ public class GameManager : MonoBehaviour {
                 break;
         }
         if (tries <= 0) {
-            return;
+            return null;
         }
-        GameObject bodySection = (GameObject)Instantiate(Resources.Load("Food"));
-        bodySection.transform.position = createPoint;
-        bodySection.transform.parent = MovementController.instance.transform;
+        GameObject food = (GameObject)Instantiate(Resources.Load("Food"));
+        food.transform.position = createPoint;
+        food.transform.parent = MovementController.instance.transform;
+        return food;
     }
 }

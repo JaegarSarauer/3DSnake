@@ -1,9 +1,11 @@
 ﻿using UnityEngine;
 using System.Collections;
+using UnityEngine.SceneManagement;
 
 public class SceneManager : MonoBehaviour {
     public static SceneManager instance;
 
+    public enum SceneID { MENU, GAME, UNKNOWN }
 
     void Awake() {
         if (instance == null)
@@ -24,5 +26,15 @@ public class SceneManager : MonoBehaviour {
 
     public void endGame(bool didWin) {
         
+    }
+
+
+    public SceneID getSceneID() {
+        string scene = UnityEngine.SceneManagement.SceneManager.GetActiveScene().name;
+        if (scene.Equals("Game"))
+            return SceneID.GAME;
+        if (scene.Equals("MenuScene"))
+            return SceneID.MENU;
+        return SceneID.UNKNOWN;
     }
 }

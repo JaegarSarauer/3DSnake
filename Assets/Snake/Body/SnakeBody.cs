@@ -30,8 +30,13 @@ public class SnakeBody : MonoBehaviour {
         updateSnake();
         return curPos;
     }
-
-
-
     
+    public void killSnake() {
+        Rigidbody r = gameObject.AddComponent<Rigidbody>();
+        r.mass = 5;
+        r.useGravity = true;
+        r.AddExplosionForce(2000f, transform.position + Vector3.forward, 50, 5F);
+    }
+
+
 }

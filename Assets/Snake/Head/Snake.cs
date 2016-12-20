@@ -39,24 +39,26 @@ public class Snake : MonoBehaviour {
     }
 
     public void updateSnake() {
+
         lastPos = transform.position;
-
         movementDirection = GetMoveDirection(MovementController.instance.nextMove);
-        transform.position += movementDirection;
-        //round
-        movementDirection = new Vector3(Mathf.Round(movementDirection.x), Mathf.Round(movementDirection.y), Mathf.Round(movementDirection.z));
 
-        /*
-        //all other pieces, transform from the parent.
-        //for (var i = 1; i < snakeBody.Count; i++)
-        for (var i = snakeBody.Count - 1; i >= 1; i--)
-            snakeBody[i].updateSnake(snakeBody[i - 1].getLastPos());
-
-        //if theres at least one body piece, update the transform with the head.
-        if (snakeBody.Count > 0)
-            snakeBody[0].updateSnake(lastPos);*/
         if (snakeBody.Count > 0)
             snakeBody[snakeBody.Count - 1].updateSnake();
+
+
+        //if (snakeBody.Count > 0 && !pointInPoint(lastPos + movementDirection, snakeBody[snakeBody.Count - 1].transform.position) || snakeBody.Count == 0) {
+            GameManager.instance.checkDeath(lastPos + movementDirection);
+            if (GameManager.instance.died)
+                return;
+        //}
+
+        transform.position += movementDirection;
+
+        //round
+        movementDirection = new Vector3(Mathf.Round(movementDirection.x), Mathf.Round(movementDirection.y), Mathf.Round(movementDirection.z));
+        
+
 
     }
 
@@ -121,6 +123,17 @@ public class Snake : MonoBehaviour {
         }
     }
 
+    public bool outsideOfWorld(Vector3 pos) {
+        var outside = GameManager.instance.distanceFromWorldCenter + .9;
+        if (pos.x > outside || pos.x < -outside)
+            return true;
+        if (pos.y > outside || pos.y < -outside)
+            return true;
+        if (pos.z > outside || pos.z < -outside)
+            return true;
+        return false;
+    }
+
     public bool outsideOfWorld() {
         var outside = GameManager.instance.distanceFromWorldCenter + .9;
         if (transform.position.x > outside || transform.position.x < -outside)
@@ -132,6 +145,16 @@ public class Snake : MonoBehaviour {
         return false;
     }
 
+    public void killSnake() {
+        Rigidbody r = gameObject.AddComponent<Rigidbody>(); 
+        r.mass = 5; 
+        r.useGravity = true;
+        r.AddExplosionForce(2000f, transform.position + Vector3.forward, 50, 5F);
+
+        for (var i = snakeBody.Count - 1; i >= 0; i--) {
+            snakeBody[i].killSnake();
+        }
+    }
 
 
 }
