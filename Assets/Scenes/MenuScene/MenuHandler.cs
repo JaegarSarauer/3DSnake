@@ -42,15 +42,15 @@ public class MenuHandler : MonoBehaviour {
         switch (speedMultiplier) {
             case Speed.SLOW:
                 speedMultiplier = Speed.MEDIUM;
-                realSpeed = .4f;
+                realSpeed = .6f;
                 break;
             case Speed.MEDIUM:
                 speedMultiplier = Speed.FAST;
-                realSpeed = .2f;
+                realSpeed = .3f;
                 break;
             case Speed.FAST:
                 speedMultiplier = Speed.SLOW;
-                realSpeed = .6f;
+                realSpeed = .9f;
                 break;
         }
         speedMultiplierText.text = "x" + (1 + (int)speedMultiplier);

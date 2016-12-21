@@ -74,13 +74,13 @@ public class GameManager : MonoBehaviour {
         MenuHandler.Speed speed = (MenuHandler.Speed)DataHandler.instance.loadData(DataHandler.DataID.SPEED);
         switch(speed) {
             case MenuHandler.Speed.SLOW:
-                return .6f;
+                return .9f;
             case MenuHandler.Speed.MEDIUM:
-                return .4f;
+                return .6f;
             case MenuHandler.Speed.FAST:
-                return .2f;
+                return .3f;
         }
-        return .6f;
+        return .9f;
     }
 
     public void checkDeath(Vector3 futurePos) {

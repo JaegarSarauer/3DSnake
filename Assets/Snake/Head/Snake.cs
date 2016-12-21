@@ -57,20 +57,20 @@ public class Snake : MonoBehaviour {
 
         //round
         movementDirection = new Vector3(Mathf.Round(movementDirection.x), Mathf.Round(movementDirection.y), Mathf.Round(movementDirection.z));
-        
+        reallignSnake();
 
 
     }
 
     public void reallignSnake() {
-        var pos = transform.position;
-        transform.position = new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), Mathf.Round(pos.z));
-        transform.eulerAngles = new Vector3(0, 0, 0);
+        var pos = transform.localPosition;
+        transform.localPosition = new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), Mathf.Round(pos.z));
+        transform.localEulerAngles = new Vector3(0, 0, 0);
 
         for (var i = snakeBody.Count - 1; i >= 0; i--) {
-            pos = snakeBody[i].transform.position;
-            snakeBody[i].transform.position = new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), Mathf.Round(pos.z));
-            snakeBody[i].transform.eulerAngles = new Vector3(0, 0, 0);
+            pos = snakeBody[i].transform.localPosition;
+            snakeBody[i].transform.localPosition = new Vector3(Mathf.Round(pos.x), Mathf.Round(pos.y), Mathf.Round(pos.z));
+            snakeBody[i].transform.localEulerAngles = new Vector3(0, 0, 0);
         }
     }
 
@@ -105,7 +105,7 @@ public class Snake : MonoBehaviour {
     }
 
     private bool pointInPoint(Vector3 p1, Vector3 p2) {
-        return (Mathf.Abs(p1.x - p2.x) < .1 && Mathf.Abs(p1.y - p2.y) < .1 && Mathf.Abs(p1.z - p2.z) < .1);
+        return (Mathf.Abs(p1.x - p2.x) < .25 && Mathf.Abs(p1.y - p2.y) < .25 && Mathf.Abs(p1.z - p2.z) < .25);
     }
 
     public Vector3 GetMoveDirection(MovementController.RotateDirection dir) {
