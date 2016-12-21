@@ -24,6 +24,9 @@ public class MovementController : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+        if (Input.GetKeyDown(KeyCode.P))
+            HUDButtonHandler.instance.togglePause();
+
         if (GameManager.instance.isPaused)
             return;
         if (Input.GetKeyDown(KeyCode.UpArrow)) {

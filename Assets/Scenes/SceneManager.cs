@@ -14,18 +14,14 @@ public class SceneManager : MonoBehaviour {
             Destroy(this);
     }
 
-    // Use this for initialization
-    void Start () {
-	
-	}
-	
-	// Update is called once per frame
-	void Update () {
-	
-	}
-
     public void endGame(bool didWin) {
-        
+        UnityEngine.SceneManagement.SceneManager.LoadScene("MenuScene");
+        SoundManager.instance.playGameMusic(SoundManager.MusicID.MENU);
+    }
+
+    public void restartGame() {
+        UnityEngine.SceneManagement.SceneManager.LoadScene("Game");
+        SoundManager.instance.playGameMusic(SoundManager.MusicID.GAME);
     }
 
 

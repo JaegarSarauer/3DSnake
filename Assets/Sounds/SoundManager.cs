@@ -20,9 +20,10 @@ public class SoundManager : MonoBehaviour {
         }
     }
 
-    public enum SFXID { EAT, WORLD_SHIFT }
+    public enum SFXID { EAT, WORLD_SHIFT, CLICK }
     public AudioSource worldShift;
     public AudioSource eat;
+    public AudioSource click;
 
     public enum MusicID { MENU, GAME, NONE }
 
@@ -36,6 +37,18 @@ public class SoundManager : MonoBehaviour {
             Destroy(this);
     }
 
+    public void Start() {
+      /*  DontDestroyOnLoad(gameObject);
+        DontDestroyOnLoad(worldShift);
+        DontDestroyOnLoad(eat);
+        DontDestroyOnLoad(menuMusic);
+        DontDestroyOnLoad(gameMusic);*/
+    }
+
+    public void UIClick() {
+        playSound(SFXID.CLICK);
+    }
+
     public void playSound(SFXID sound) {
         if (!playSFX)
             return;
@@ -47,6 +60,10 @@ public class SoundManager : MonoBehaviour {
             case SFXID.WORLD_SHIFT:
                 if (!worldShift.isPlaying)
                     worldShift.Play();
+                break;
+            case SFXID.CLICK:
+                if (!click.isPlaying)
+                    click.Play();
                 break;
         }
     }

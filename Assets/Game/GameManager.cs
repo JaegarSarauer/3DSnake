@@ -8,10 +8,9 @@ public class GameManager : MonoBehaviour {
     public bool isPaused = false;
 
     public GameObject snakeObject;
-    public Snake snake;
     public GameObject food;
 
-    private float _updateInterval = .5f;
+    private float _updateInterval = .6f;
     public float updateInterval {
         get {
             return _updateInterval;
@@ -29,11 +28,9 @@ public class GameManager : MonoBehaviour {
 
     public int score = 0;
 
-    public Text scoreText;
-
     public void addScore() {
         score++;
-        scoreText.text = score.ToString();
+        HUDButtonHandler.instance.scoreText.text = score.ToString();
     }
 
     void Awake() {
@@ -46,7 +43,8 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
         timePassed = 0;
-	}
+        _updateInterval = getSpeedMultiplier();
+    }
 	
 	// Update is called once per frame
 	void LateUpdate () {
@@ -55,6 +53,8 @@ public class GameManager : MonoBehaviour {
         timePassed += Time.deltaTime;
         if (checkUpdate() && !died) {
             gameUpdate();
+        } else if (died && timePassed >= 3) { //show game over after 3 seconds
+            HUDButtonHandler.instance.showGameOver();
         }
     }
 
@@ -70,9 +70,21 @@ public class GameManager : MonoBehaviour {
         checkDeath();
     }
 
+    private float getSpeedMultiplier() {
+        MenuHandler.Speed speed = (MenuHandler.Speed)DataHandler.instance.loadData(DataHandler.DataID.SPEED);
+        switch(speed) {
+            case MenuHandler.Speed.SLOW:
+                return .6f;
+            case MenuHandler.Speed.MEDIUM:
+                return .4f;
+            case MenuHandler.Speed.FAST:
+                return .2f;
+        }
+        return .6f;
+    }
+
     public void checkDeath(Vector3 futurePos) {
         if (Snake.instance.pointOnSnake(futurePos) || Snake.instance.outsideOfWorld(futurePos)) {
-            SceneManager.instance.endGame(false);
             if (!died)
                 Snake.instance.killSnake();
             died = true;
@@ -81,7 +93,6 @@ public class GameManager : MonoBehaviour {
 
     public void checkDeath() {
         if (Snake.instance.pointOnSnake(Snake.instance.transform.position) || Snake.instance.outsideOfWorld()) {
-            SceneManager.instance.endGame(false);
             if (!died)
                 Snake.instance.killSnake();
             died = true;
