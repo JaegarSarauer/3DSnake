@@ -68,8 +68,6 @@ public class HUDButtonHandler : MonoBehaviour {
         scoreText.gameObject.SetActive(false);
         pauseButton.gameObject.SetActive(false);
         endGameScoreText.text = "SCORE: " + GameManager.instance.score;
-        if (GameManager.instance.score > DataHandler.instance.loadData(DataHandler.DataID.HIGHSCORE))
-            DataHandler.instance.saveData(DataHandler.DataID.HIGHSCORE, GameManager.instance.score);
         gameOverMenu.SetActive(true);
     }
 

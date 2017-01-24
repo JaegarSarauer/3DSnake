@@ -44,6 +44,7 @@ public class GameManager : MonoBehaviour {
 	void Start () {
         timePassed = 0;
         _updateInterval = getSpeedMultiplier();
+        KongregateManager.instance.scoreSubmitted = false;
     }
 	
 	// Update is called once per frame
@@ -85,18 +86,27 @@ public class GameManager : MonoBehaviour {
 
     public void checkDeath(Vector3 futurePos) {
         if (Snake.instance.pointOnSnake(futurePos) || Snake.instance.outsideOfWorld(futurePos)) {
-            if (!died)
-                Snake.instance.killSnake();
-            died = true;
+            handleDeath();
         }
     }
 
     public void checkDeath() {
         if (Snake.instance.pointOnSnake(Snake.instance.transform.position) || Snake.instance.outsideOfWorld()) {
-            if (!died)
-                Snake.instance.killSnake();
-            died = true;
+            handleDeath();
         }
+    }
+
+    private void handleDeath() {
+        if (!died)
+            Snake.instance.killSnake();
+        died = true;
+        submitScore();
+    }
+
+    private void submitScore() {
+        if (GameManager.instance.score > DataHandler.instance.loadData(DataHandler.DataID.HIGHSCORE))
+            DataHandler.instance.saveData(DataHandler.DataID.HIGHSCORE, GameManager.instance.score);
+        KongregateManager.instance.submitHighscore(GameManager.instance.score);
     }
 
     bool checkUpdate() {

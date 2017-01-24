@@ -154,6 +154,7 @@ public class Snake : MonoBehaviour {
         for (var i = snakeBody.Count - 1; i >= 0; i--) {
             snakeBody[i].killSnake();
         }
+
     }
 
 
